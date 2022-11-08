@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
       - name: magento-unpack
-        image: kiweeteam/magento2:2.3.7-p2-1
+        image: mykaua/magento:2.4.4_1
         command: ["/bin/sh"]
         args:
         - -c

@@ -31,14 +31,14 @@ spec:
     spec:
       containers:
       - args:
-        - --max_allowed_packet=134217728
-        - --ignore-db-dir=lost+found
-        volumeMounts:
-        - mountPath: /var/lib/mysql
-          name: data
-        - mountPath: /etc/my.cnf
-          name: mycnf
-          subPath: my.cnf
+  #      - --max_allowed_packet=134217728
+  #      - --ignore-db-dir=lost+found
+  #      volumeMounts:
+  #      - mountPath: /var/lib/mysql
+  #        name: data
+  #      - mountPath: /etc/my.cnf
+  #        name: mycnf
+  #        subPath: my.cnf
         env:
         - name: MYSQL_DATABASE
           valueFrom:
@@ -60,7 +60,7 @@ spec:
             configMapKeyRef:
               name: config
               key: DB_ROOT_PASS
-        image: percona:5.7
+        image:  mysql:8.0
         name: db
         resources:
           requests:

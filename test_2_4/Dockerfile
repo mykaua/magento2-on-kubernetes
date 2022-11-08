@@ -63,23 +63,24 @@ ARG COMPOSER_AUTH
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+
 COPY --chown=www-data composer.json composer.json
 COPY --chown=www-data composer.lock composer.lock
 
-RUN composer update
+RUN composer install
 
-COPY --chown=www-data config.php app/etc/config.php
+#COPY --chown=www-data config.php app/etc/config.php
 
 COPY --chown=www-data bin bin
 
-FROM build as app
+#FROM build as app
 
-ENV MAGE_MODE=production
-RUN php -d memory_limit=2G bin/magento setup:di:compile
-RUN composer dump-autoload --optimize --apcu
-RUN php -d memory_limit=2G bin/magento setup:static-content:deploy -f
-RUN rm -rf /var/www/html/var/cache
-RUN rm -rf /var/www/html/var/page_cache
-RUN rm -rf /var/www/html/var/session
+#ENV MAGE_MODE=production
+#RUN php -d memory_limit=2G bin/magento setup:di:compile
+#RUN composer dump-autoload --optimize --apcu
+#RUN php -d memory_limit=2G bin/magento setup:static-content:deploy -f
+#RUN rm -rf /var/www/html/var/cache
+#RUN rm -rf /var/www/html/var/page_cache
+#RUN rm -rf /var/www/html/var/session
 
-COPY --chown=www-data env.docker.php app/etc/env.php
+#COPY --chown=www-data env.docker.php app/etc/env.php

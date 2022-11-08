@@ -1,18 +1,20 @@
-#apiVersion: v1
-#kind: Service
-#metadata:
-#  name: magento-web
-#  labels:
-#    app: magento-web
-#    k8s-app: magento
-#spec:
-#  ports:
-#  - name: "http"
-#    port: 80
-#    protocol: TCP
-#    targetPort: 80
-#  selector:
-#    app: magento-web
+apiVersion: v1
+kind: Service
+metadata:
+  name: magento-web
+  labels:
+    app: magento-web
+    k8s-app: magento
+spec:
+  type: NodePort
+  ports:
+  - name: "http"
+    port: 80
+    protocol: TCP
+    targetPort: 80
+    nodePort: 31675
+  selector:
+    app: magento-web
 
 ---
 

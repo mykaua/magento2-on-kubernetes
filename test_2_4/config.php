@@ -3,8 +3,8 @@ return [
     'modules' => [
         'Magento_AdminAnalytics' => 1,
         'Magento_Store' => 1,
-        'Magento_AdobeIms' => 1,
-        'Magento_AdobeImsApi' => 1,
+        'Magento_AdobeIms' => 0,
+        'Magento_AdobeImsApi' => 0,
         'Magento_AdobeStockAdminUi' => 1,
         'Magento_MediaGallery' => 1,
         'Magento_AdobeStockAssetApi' => 1,
