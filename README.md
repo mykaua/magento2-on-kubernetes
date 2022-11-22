@@ -11,4 +11,6 @@ k8s secure has to be added
 
 bin/magento module:status
 bin/magento module:enable --all
-bin/magento setup:di:compile
+
+
+bin/magento setup:di:compile -- more information

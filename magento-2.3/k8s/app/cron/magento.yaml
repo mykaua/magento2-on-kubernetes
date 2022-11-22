@@ -1,0 +1,57 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: magento-cron
+spec:
+  schedule: '* * * * *'
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+    spec:
+      template:
+        metadata:
+          labels:
+            app: magento-cron
+            k8s-app: magento
+        spec:
+          initContainers:
+          - name: wait-for-web
+            image: curlimages/curl
+            command: ["/bin/sh"]
+            args:
+            - -c
+            - |
+              while ! curl -kILSs --fail -XGET \
+                -H "Host: $(CONFIG__DEFAULT__WEB__COOKIE__COOKIE_DOMAIN)" \
+                $(MAGENTO_WEB_SERVICE_HOST):$(MAGENTO_WEB_SERVICE_PORT)/health_check.php
+              do echo "waiting for $(MAGENTO_WEB_SERVICE_HOST)"
+              sleep 1
+              done
+            envFrom:
+            - configMapRef:
+                name: config
+          containers:
+          - name: magento-cron
+            image: kiweeteam/magento2:2.3.7-p2-1
+            command: ["/bin/sh"]
+            args:
+            - -c
+            - |
+              php bin/magento cron:run
+            envFrom:
+            - configMapRef:
+                name: config
+            - configMapRef:
+                name: additional
+            resources:
+              limits:
+                cpu: 500m
+                memory: 4Gi
+              requests:
+                cpu: 50m
+                memory: 1Gi
+          restartPolicy: Never
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 600
+  failedJobsHistoryLimit: 20
+  successfulJobsHistoryLimit: 5
