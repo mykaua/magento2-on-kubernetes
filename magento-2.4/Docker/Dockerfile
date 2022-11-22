@@ -1,11 +1,9 @@
-FROM php:7.4-fpm as base
+FROM php:8.1-fpm as base
 
 ENV COMPOSER_HOME=/tmp/composer
 ENV APCU_VERSION=5.1.22
 
 RUN apt-get update && apt-get install -y --no-install-recommends gnupg \
-    netcat \
-    sudo \
     libicu-dev \
     libfreetype6-dev \
     libjpeg-dev \
@@ -18,8 +16,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends gnupg \
     unzip \
     curl \
     libonig-dev \
-    vim \
     ;
+
+RUN apt-get update && apt-get install -y vim
 
 
 RUN pecl install apcu-${APCU_VERSION}
@@ -56,23 +55,31 @@ FROM base as build
 RUN curl https://files.magerun.net/n98-magerun2.phar -o /usr/local/bin/magerun \
     && chmod 755 /usr/local/bin/magerun
 
+
 USER www-data
 WORKDIR /var/www/html
 
-ARG COMPOSER_AUTH
+#ARG COMPOSER_AUTH
+
+
+COPY --chown=www-data auth.json auth.json
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
 
 COPY --chown=www-data composer.json composer.json
 COPY --chown=www-data composer.lock composer.lock
 
-RUN composer update
+#RUN composer update
+RUN composer install
 
 COPY --chown=www-data config.php app/etc/config.php
 
 COPY --chown=www-data bin bin
 
-FROM build as app
+COPY --chown=www-data env.docker.php app/etc/env.php
+
+#FROM build as app
 
 ENV MAGE_MODE=production
 RUN php -d memory_limit=2G bin/magento setup:di:compile
