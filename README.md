@@ -13,4 +13,24 @@ bin/magento module:status
 bin/magento module:enable --all
 
 
-bin/magento setup:di:compile -- more information
+Deploy static has to be run on build.
+
+Two commands:
+bin/magento setup:di:compile
+bin/magento setup:static-content:deploy -f
+
+
+```bin/magento setup:di:compile``` - completes successfully.
+```bin/magento setup:static-content:deploy -f``` -  has the issues.
+
+The issues, like:
+```
+Compilation from source /var/www/html/vendor/magento/module-usps/view/frontend/web/js/model/shipping-rates-validation-rules.js failed
+DomainException: The default website isn't defined. Set the website and try again
+```
+It means, the modules require url, maybe, database.
+
+Documentation:
+
+https://experienceleague.adobe.com/docs/commerce-operations/configuration-guide/cli/static-view/static-view-file-deployment.html
+
